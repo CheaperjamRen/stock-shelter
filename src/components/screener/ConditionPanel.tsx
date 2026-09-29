@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { CATEGORY_ORDER, METRICS, METRIC_LIST, OPERATOR_LABEL } from '@/data/metrics';
+import { CATEGORY_ORDER, METRICS, METRIC_LIST, OPERATOR_LABEL, metricProvenance } from '@/data/metrics';
 import type { MetricKey, Operator } from '@/data/metrics';
 import type { Condition } from '@/engine/types';
 import type { ConditionAlternative } from '@/engine/types';
@@ -69,8 +69,9 @@ function alternativesFor(c: Condition): ConditionAlternative[] {
 const OPERATORS: Operator[] = ['lt', 'lte', 'gt', 'gte', 'between'];
 
 function ConditionCard({ cond }: { cond: Condition }) {
-  const { updateCondition, removeCondition, toggleCondition, funnel } = useScreener();
+  const { providerInfo, updateCondition, removeCondition, toggleCondition, funnel } = useScreener();
   const def = METRICS[cond.metric];
+  const pv = metricProvenance(cond.metric, providerInfo?.id === 'fuyao');
   const alts = alternativesFor(cond);
   const hit = funnel[cond.id];
 
@@ -183,7 +184,7 @@ function ConditionCard({ cond }: { cond: Condition }) {
       </div>
 
       <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-        口径：{def.dataPoint} · 来源：{def.source} · 合理区间 {def.domain[0]}~{def.domain[1]} {def.unit}（悬停指标名查看完整定义）
+        口径：{pv.dataPoint} · 来源：{pv.source} · 合理区间 {def.domain[0]}~{def.domain[1]} {def.unit}（悬停指标名查看完整定义）
       </p>
 
       {cond.enabled && hit && (() => {
@@ -224,7 +225,7 @@ function useApplyAlt(id: string, alt: ConditionAlternative) {
 }
 
 function AddConditionPanel() {
-  const { addCondition } = useScreener();
+  const { providerInfo, addCondition } = useScreener();
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -243,18 +244,21 @@ function AddConditionPanel() {
               <div key={cat} className="mb-3">
                 <p className="mb-1.5 text-xs font-semibold text-foreground/80">{cat}</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {items.map((m) => (
-                    <button
-                      key={m.key}
-                      type="button"
-                      title={`${m.definition}\n口径：${m.dataPoint} · 单位：${m.unit}`}
-                      onClick={() => addCondition(m.key)}
-                      className="group flex items-center gap-1 rounded-md border border-border bg-secondary/50 px-2.5 py-1.5 text-xs transition-colors hover:border-primary/40 hover:bg-primary/5"
-                    >
-                      {m.name}
-                      <Plus className="h-3 w-3 text-muted-foreground group-hover:text-primary" aria-hidden />
-                    </button>
-                  ))}
+                  {items.map((m) => {
+                    const mp = metricProvenance(m.key, providerInfo?.id === 'fuyao');
+                    return (
+                      <button
+                        key={m.key}
+                        type="button"
+                        title={`${m.definition}\n口径：${mp.dataPoint} · 来源：${mp.source} · 单位：${m.unit}`}
+                        onClick={() => addCondition(m.key)}
+                        className="group flex items-center gap-1 rounded-md border border-border bg-secondary/50 px-2.5 py-1.5 text-xs transition-colors hover:border-primary/40 hover:bg-primary/5"
+                      >
+                        {m.name}
+                        <Plus className="h-3 w-3 text-muted-foreground group-hover:text-primary" aria-hidden />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             );

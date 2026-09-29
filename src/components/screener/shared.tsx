@@ -4,10 +4,11 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
-import { METRICS, METRIC_LIST } from '@/data/metrics';
+import { METRICS, METRIC_LIST, metricProvenance } from '@/data/metrics';
 import type { MetricKey } from '@/data/metrics';
 import type { EvalStatus } from '@/engine/types';
 import type { ScreenRow } from '@/data/types';
+import { useScreener } from '@/state/ScreenerContext';
 import { cn } from '@/lib/utils';
 
 /**
@@ -53,6 +54,8 @@ export function MetricFootnote({
   className?: string;
 }) {
   const def = METRICS[metric];
+  const { providerInfo } = useScreener();
+  const pv = metricProvenance(metric, providerInfo?.id === 'fuyao');
   const idx = METRIC_LIST.findIndex((m) => m.key === metric) + 1;
   return (
     <HoverCard openDelay={100} closeDelay={100}>
@@ -73,11 +76,11 @@ export function MetricFootnote({
           <div className="space-y-1 border-t pt-2 text-xs text-muted-foreground">
             <p>
               <span className="font-medium text-foreground/80">统计时点：</span>
-              {def.dataPoint}
+              {pv.dataPoint}
             </p>
             <p>
               <span className="font-medium text-foreground/80">数据来源：</span>
-              {def.source}
+              {pv.source}
             </p>
             <p>
               <span className="font-medium text-foreground/80">单位：</span>

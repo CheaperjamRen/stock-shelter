@@ -423,3 +423,27 @@ export const OPERATOR_LABEL: Record<Operator, string> = {
   gte: '≥',
   between: '介于',
 };
+
+/** 真实模式（扶摇 API）下的口径覆写：仅覆盖接口真实提供的字段，
+ *  未覆盖的指标在真实模式下整列数据缺失（missingNotes 已标注原因），
+ *  口径文案必须同步指向真实来源，不得沿用演示数据口径误导用户。 */
+const REAL_SOURCE = '扶摇金融数据 API（真实行情）';
+const REAL_DATA_POINT: Partial<Record<MetricKey, string>> = {
+  close: '行情快照 last_price（不复权）',
+  mktCap: '竞价快照 float_market_cap（流通市值，元）→ 亿元',
+  pe: '估值接口 pe_ttm（滚动四季）',
+  pb: '估值接口 pb_mrq（最新报告期净资产）',
+};
+
+/** 按数据源返回指标口径文案：真实模式返回接口真实口径，演示模式返回内置演示口径。 */
+export function metricProvenance(
+  key: MetricKey,
+  isReal: boolean
+): { dataPoint: string; source: string } {
+  const def = METRICS[key];
+  if (!isReal) return { dataPoint: def.dataPoint, source: def.source };
+  return {
+    dataPoint: REAL_DATA_POINT[key] ?? `${def.dataPoint}（当前数据源未提供，整列缺数据）`,
+    source: REAL_DATA_POINT[key] ? REAL_SOURCE : `${REAL_SOURCE}（该指标未提供，见数据缺失原因）`,
+  };
+}
