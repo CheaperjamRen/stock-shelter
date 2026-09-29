@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.local
+*.local
+.DS_Store
+# 密钥绝不入库：真实 Key 只经环境变量 / localStorage 传递
+.env.*
+!.env.example

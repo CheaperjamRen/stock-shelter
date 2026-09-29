@@ -1,0 +1,208 @@
+/* stylelint-disable */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============ 设计系统 token：研报标尺（浅色金融研究风，详见 docs/DESIGN.md） ============ */
+@layer base {
+  :root {
+    --radius: 0.375rem;
+
+    --background: 220 20% 97%;
+    --foreground: 220 33% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 33% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 33% 15%;
+
+    --primary: 213 65% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 214 21% 93%;
+    --secondary-foreground: 213 46% 38%;
+
+    --muted: 214 21% 93%;
+    --muted-foreground: 219 14% 45%;
+
+    --accent: 160 36% 92%;
+    --accent-foreground: 161 84% 24%;
+
+    --destructive: 0 55% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 21% 87%;
+    --input: 217 21% 87%;
+    --ring: 213 65% 33%;
+
+    /* 语义色：涨红跌绿（A 股惯例）、通过翠绿、不通过红、数据缺失灰 */
+    --up: 0 62% 45%;
+    --down: 160 84% 32%;
+    --pass: 160 84% 29%;
+    --fail: 0 55% 48%;
+    --missing: 219 14% 58%;
+
+    --chart-1: 213 65% 33%;
+    --chart-2: 160 84% 29%;
+    --chart-3: 212 46% 45%;
+    --chart-4: 28 70% 45%;
+    --chart-5: 0 55% 51%;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 33% 15%;
+    --sidebar-primary: 213 65% 33%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 213 45% 94%;
+    --sidebar-accent-foreground: 213 65% 28%;
+    --sidebar-border: 217 21% 87%;
+    --sidebar-ring: 213 65% 33%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(213 65% 33%), hsl(212 46% 45%));
+    --shadow-card: 0 1px 2px hsl(220 33% 15% / 0.05), 0 2px 6px hsl(220 33% 15% / 0.04);
+    --shadow-hover: 0 2px 4px hsl(220 33% 15% / 0.07), 0 4px 12px hsl(220 33% 15% / 0.06);
+
+    color-scheme: light;
+  }
+
+  .dark {
+    --background: 220 24% 10%;
+    --foreground: 220 20% 92%;
+    --card: 220 22% 13%;
+    --card-foreground: 220 20% 92%;
+    --popover: 220 22% 13%;
+    --popover-foreground: 220 20% 92%;
+    --primary: 213 70% 58%;
+    --primary-foreground: 220 33% 10%;
+    --secondary: 220 18% 18%;
+    --secondary-foreground: 220 20% 80%;
+    --muted: 220 18% 17%;
+    --muted-foreground: 220 12% 62%;
+    --accent: 160 30% 18%;
+    --accent-foreground: 160 60% 72%;
+    --destructive: 0 62% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 16% 24%;
+    --input: 220 16% 24%;
+    --ring: 213 70% 58%;
+    --up: 0 70% 62%;
+    --down: 160 70% 52%;
+    --pass: 160 70% 50%;
+    --fail: 0 66% 60%;
+    --missing: 219 14% 55%;
+    --chart-1: 213 70% 58%;
+    --chart-2: 160 70% 50%;
+    --chart-3: 212 50% 62%;
+    --chart-4: 28 80% 58%;
+    --chart-5: 0 66% 60%;
+    --sidebar-background: 220 22% 12%;
+    --sidebar-foreground: 220 20% 92%;
+    --sidebar-primary: 213 70% 58%;
+    --sidebar-primary-foreground: 220 33% 10%;
+    --sidebar-accent: 220 18% 18%;
+    --sidebar-accent-foreground: 213 70% 70%;
+    --sidebar-border: 220 16% 24%;
+    --sidebar-ring: 213 70% 58%;
+
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* 等宽数字：所有关键数字与表格数值列使用 */
+  .num {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  .font-serif-sc {
+    font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  }
+
+  /* 口径脚注上标序号：锚定悬浮口径卡片 */
+  .fn-sup {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.62em;
+    vertical-align: super;
+    line-height: 0;
+    color: hsl(var(--primary));
+    font-weight: 500;
+    padding-left: 1px;
+  }
+
+  /* 数据缺失斜纹背景：显式提示，禁止静默赋默认值 */
+  .missing-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      hsl(var(--missing) / 0.16) 0,
+      hsl(var(--missing) / 0.16) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+
+  /* 涨跌语义色（A 股惯例：涨红跌绿） */
+  .text-up {
+    color: hsl(var(--up));
+  }
+  .text-down {
+    color: hsl(var(--down));
+  }
+
+  /* What-if 边际变动行闪烁反馈 */
+  .flash-in {
+    animation: flash-in 600ms ease-out;
+  }
+  .flash-out {
+    animation: flash-out 600ms ease-out;
+  }
+}
+
+@keyframes flash-in {
+  0% {
+    background-color: hsl(var(--pass) / 0.18);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes flash-out {
+  0% {
+    background-color: hsl(var(--fail) / 0.16);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
